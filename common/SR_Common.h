@@ -6,3 +6,4 @@
 #include "Profile.h"
 #include "TGAImage.h"
 #include "MathUtil.h"
+#include "ObjLoader.h"

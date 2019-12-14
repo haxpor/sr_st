@@ -27,14 +27,18 @@ struct ObjData
     friend void swap(ObjData& first, ObjData& second) noexcept;
 };
 
-///
-/// Load .obj file then return result of formed vertices.
-/// Load vertex, texture coordinate and normals.
-///
-/// \param filepath file path of .obj file to parse
-/// \param dataOut Data output to be set when it successfully loaded.
-/// \return Return true if successfully loaded, otherwise return false.
-///
-bool LoadObjFile(const char* filepath, ObjData& dataOut);
+class ObjLoader
+{
+public:
+    ///
+    /// Load .obj file then return result of formed vertices.
+    /// Load vertex, texture coordinate and normals.
+    ///
+    /// \param filepath file path of .obj file to parse
+    /// \param dataOut Data output to be set when it successfully loaded.
+    /// \return Return true if successfully loaded, otherwise return false.
+    ///
+    static bool loadObjFile(const char* filepath, ObjData& dataOut);
+};
 
 SR_NAMESPACE_END

@@ -171,12 +171,12 @@ static void free_dups(DUPS** dups_table, int count)
     *dups_table = nullptr;
 }
 
-bool LoadObjFile(const char* filepath, ObjData& dataOut)
+bool ObjLoader::loadObjFile(const char* filepath, ObjData& dataOut)
 {
     std::FILE* file = std::fopen(filepath, "rb");
     if (file == nullptr)
     {
-        LOGE("Cannot read .obj file");
+        LOGE("Cannot read .obj file\n");
         return false;
     }
 
@@ -255,7 +255,7 @@ bool LoadObjFile(const char* filepath, ObjData& dataOut)
             }
             else
             {
-                LOGE("Warning: Failed attempt to read vertex data for 'v ' format");
+                LOGE("Warning: Failed attempt to read vertex data for 'v ' format\n");
             }
         }
         else if (std::strncmp(line, "vt ", strlen("vt ")) == 0)
@@ -275,7 +275,7 @@ bool LoadObjFile(const char* filepath, ObjData& dataOut)
             }
             else
             {
-                LOGE("Warning: Failed attempt to read vertex data for 'vt ' format");
+                LOGE("Warning: Failed attempt to read vertex data for 'vt ' format\n");
             }
         }
         else if (std::strncmp(line, "vn ", strlen("vn ")) == 0)
@@ -296,7 +296,7 @@ bool LoadObjFile(const char* filepath, ObjData& dataOut)
             }
             else
             {
-                LOGE("Warning: Failed attempt to read vertex data for 'vn ' format");
+                LOGE("Warning: Failed attempt to read vertex data for 'vn ' format\n");
             }
         }
         else if (std::strncmp(line, "f ", strlen("f ")) == 0)
@@ -368,10 +368,10 @@ bool LoadObjFile(const char* filepath, ObjData& dataOut)
     int total_real_vertices_count = static_vertices_count + (latest_used_vertices_index - static_vertices_count);
     out_vertices = static_cast<Vertex_v1*>(std::realloc(out_vertices, sizeof(Vertex_v1) * total_real_vertices_count));
     out_indices = static_cast<unsigned int*>(std::realloc(out_indices, sizeof(unsigned int) * (i_i+1)));
-    LOGE("final shrink vertices output down to = %d", total_real_vertices_count);
+    LOG("final shrink vertices output down to = %d\n", total_real_vertices_count);
 
-    LOGE("total vertices: %d, texcoords: %d, normals: %d, final vertices: %d, indices count: %d", vertices_i, texcoords_i, normals_i, total_real_vertices_count, i_i+1);
-    LOGE("calculated (as expanded) vertices count: %d, calculated indices count: %d", final_vertices_count, final_indices_count);
+    LOG("total vertices: %d, texcoords: %d, normals: %d, final vertices: %d, indices count: %d\n", vertices_i, texcoords_i, normals_i, total_real_vertices_count, i_i+1);
+    LOG("calculated (as expanded) vertices count: %d, calculated indices count: %d\n", final_vertices_count, final_indices_count);
 
     // set results
     if (dataOut.verticesPtr != nullptr)     // check pointer itself is declared somewhere externally, check so we can set such pointer to point to our loaded data
