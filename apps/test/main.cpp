@@ -41,5 +41,12 @@ int main()
     sr::TGAImage::write24("out.tga", &frameBuffer[0], 256, 256);
     sr::Profile::endAndPrint();
 
+    // ObjLoader
+    std::cout << "Load dragon.obj\n";
+    sr::Profile::start();
+    sr::ObjData objdata;
+    sr::ObjLoader::loadObjFile("../../res/objs/dragon.obj", objdata);
+    sr::Profile::endAndPrint();
+    
     return 0;
 }
