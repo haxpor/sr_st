@@ -4,12 +4,12 @@
 int main()
 {
     // logging
-	LOG("Log normal\n");
-	LOG_YELLOW("Log - Yellow\n");
-	LOGE("Log error\n");
-	LOGE_BLUE("Log error - Blue\n");
-	LOGA("Log (thread-safe)\n");
-	LOGA_CYAN("Log (thread-safe) - Magenta\n");
+    LOG("Log normal\n");
+    LOG_YELLOW("Log - Yellow\n");
+    LOGE("Log error\n");
+    LOGE_BLUE("Log error - Blue\n");
+    LOGA("Log (thread-safe)\n");
+    LOGA_CYAN("Log (thread-safe) - Magenta\n");
 
     // MathUtil
     sr::MathUtil::init(10);
