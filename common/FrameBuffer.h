@@ -30,6 +30,19 @@ public:
         return frameBuffer[x + y*width];
     }
 
+    inline unsigned int* getFrameBuffer()
+    {
+        return &frameBuffer[0];
+    }
+
+    inline const unsigned int* getFrameBuffer() const
+    {
+        return &frameBuffer[0];
+    }
+
+    inline int getWidth() const { return width; }
+    inline int getHeight() const { return height; }
+
 private:
     int width;
     int height;
