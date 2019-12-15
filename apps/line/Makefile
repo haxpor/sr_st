@@ -1,6 +1,6 @@
 CXX = g++
-CXXFLAGS = -g -ggdb -pg -O0 -std=c++11 -I../../common
-CXXLDFLAGS = -pg -lm
+CXXFLAGS = -g -std=c++11 -I../../common
+CXXLDFLAGS = -lm
 
 SOURCES = main.cpp
 SOURCES += ../../common/ObjLoader.cpp ../../common/Logger.cpp ../../common/Profile.cpp

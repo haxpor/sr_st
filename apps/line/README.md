@@ -41,3 +41,19 @@ Each sample counts as 0.01 seconds.
 ```
 
 Tested on Ubuntu 18.04 (5.0.0-37-generic #40~18.04.1-Ubuntu SMP) 8GB RAM, Intel(R) Core(TM) i5-3210M CPU @ 2.50GHz
+
+# Build
+
+## Build for Profiling
+
+Use addtional of `-ggdb -pg -O0` when compile to be profiled (sampling) with `gprof` tool which is used to generated above result.
+
+The step in sampling with `gprof` is as follows
+
+1. Compile source file with additional flags as mentioned
+2. Run the program
+3. Generate sampling report via `gprof line gmon.out > analysis.txt`
+
+These steps repeat 2 times for `line3()` and `line4()`.
+Note that in `Makefile`, it is normal compile flags used, not for sampling with `gprof`. So you have to modify yourself.
+
