@@ -161,15 +161,8 @@ int main()
     line6(sr::Vec2i(13, 20), sr::Vec2i(80, 40), fb, sr::makeColorARGB(255, 255, 255));
     line6(sr::Vec2i(80, 40), sr::Vec2i(13, 20), fb, sr::makeColorARGB(255, 0, 0));      // replace white line, but it should not work
 #elif LINE_IMPL == 7
-    //line7(sr::Vec2i(13, 20), sr::Vec2i(80, 40), fb, sr::makeColorARGB(255, 255, 255));
-    //line7(sr::Vec2i(80, 40), sr::Vec2i(13, 20), fb, sr::makeColorARGB(255, 0, 0));      // replace one line
-    
-    for (int i=0; i<1000000; ++i)
-    {
     line7(sr::Vec2i(13, 20), sr::Vec2i(80, 40), fb, sr::makeColorARGB(255, 255, 255));
-    line7(sr::Vec2i(20, 13), sr::Vec2i(40, 80), fb, sr::makeColorARGB(255, 0, 0));
-    line7(sr::Vec2i(80, 40), sr::Vec2i(13, 20), fb, sr::makeColorARGB(255, 0, 0));
-    }
+    line7(sr::Vec2i(80, 40), sr::Vec2i(13, 20), fb, sr::makeColorARGB(255, 0, 0));      // replace one line
 #endif
 
     sr::TGAImage::write24("out.tga", fb.getFrameBuffer(), fb.getWidth(), fb.getHeight());
