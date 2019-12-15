@@ -34,3 +34,6 @@
 # swap files from vim
 *.swp
 *.swo
+
+# generated image from apps
+*.tga
