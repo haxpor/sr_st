@@ -51,14 +51,6 @@ public:
     {
         return static_cast<float>(std::rand()) / (static_cast<float>(RAND_MAX) + 1.0f) * (max+1-min) + min;
     }
-
-    ///
-    /// Make color in format ARGB
-    /// This will truncate input parameter to 8-bit then pack into unsigned int for color
-    static constexpr inline unsigned int makeColorARGB(int r, int g, int b, int a)
-    {
-        return ((a&0xFF) << 24) | ((r&0xFF) << 16) | ((g&0xFF) << 8) | (b & 0xFF);
-    }
 };
 
 SR_NAMESPACE_END

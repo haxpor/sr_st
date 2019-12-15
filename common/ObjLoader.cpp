@@ -136,7 +136,7 @@ typedef struct
 } DUPS;
 
 /// handle vertex for 'f '
-static void handle_f_v(int v_index, int vt_index, int vn_index, int* final_vertices_count, int* final_indices_count, Vertex_v1** out_vertices, unsigned int** out_indices, int* latest_used_vertices_index, int* indices_index, Vec3* vertices, Vec2* texcoords, Vec3* normals, DUPS* dup_table);
+static void handle_f_v(int v_index, int vt_index, int vn_index, int* final_vertices_count, int* final_indices_count, Vertex_v1** out_vertices, unsigned int** out_indices, int* latest_used_vertices_index, int* indices_index, Vec3f* vertices, Vec2f* texcoords, Vec3f* normals, DUPS* dup_table);
 
 static void free_dup_recur(DUP* dup_ptr)
 {
@@ -184,9 +184,9 @@ bool ObjLoader::loadObjFile(const char* filepath, ObjData& dataOut)
     char line[256];
 
     // collect all meta vertex array info before we finally form final vertices and indices
-    Vec3* vertices = nullptr; 
-    Vec2* texcoords = nullptr;
-    Vec3* normals = nullptr;
+    Vec3f* vertices = nullptr; 
+    Vec2f* texcoords = nullptr;
+    Vec3f* normals = nullptr;
 
     // keep track of current allocated count for all buffer
     int v_alloc_count = INITIAL_ELEM_COUNT;
@@ -200,9 +200,9 @@ bool ObjLoader::loadObjFile(const char* filepath, ObjData& dataOut)
     // start with lowest enough space to hold elements
     // the true number of element is tracked along the way, and
     // we will adjust the number of space later at the end to reduce un-needed memory usage
-    vertices = static_cast<Vec3*>(std::calloc(1, sizeof(Vec3) * v_alloc_count));
-    texcoords = static_cast<Vec2*>(std::calloc(1, sizeof(Vec2) * vt_alloc_count));
-    normals = static_cast<Vec3*>(std::calloc(1, sizeof(Vec3) * vn_alloc_count));
+    vertices = static_cast<Vec3f*>(std::calloc(1, sizeof(Vec3f) * v_alloc_count));
+    texcoords = static_cast<Vec2f*>(std::calloc(1, sizeof(Vec2f) * vt_alloc_count));
+    normals = static_cast<Vec3f*>(std::calloc(1, sizeof(Vec3f) * vn_alloc_count));
 
     // flag checking whether it has been entered into 'f ' case
     bool entered_f = false;
@@ -245,7 +245,7 @@ bool ObjLoader::loadObjFile(const char* filepath, ObjData& dataOut)
                 {
                     // expand with pre-set value
                     v_alloc_count += v_alloc_count * INCREASE_ELEM_FACTOR;
-                    vertices = static_cast<Vec3*>(std::realloc(vertices, sizeof(Vec3) * v_alloc_count));
+                    vertices = static_cast<Vec3f*>(std::realloc(vertices, sizeof(Vec3f) * v_alloc_count));
                 }
 
                 // copy by values
@@ -267,7 +267,7 @@ bool ObjLoader::loadObjFile(const char* filepath, ObjData& dataOut)
                 {
                     // expand with pre-set value
                     vt_alloc_count += vt_alloc_count * INCREASE_ELEM_FACTOR;
-                    texcoords = static_cast<Vec2*>(std::realloc(texcoords, sizeof(Vec2) * vt_alloc_count));
+                    texcoords = static_cast<Vec2f*>(std::realloc(texcoords, sizeof(Vec2f) * vt_alloc_count));
                 }
 
                 texcoords[texcoords_i].s = temp_v[0];
@@ -287,7 +287,7 @@ bool ObjLoader::loadObjFile(const char* filepath, ObjData& dataOut)
                 {
                     // expand with pre-set value
                     vn_alloc_count += vn_alloc_count * INCREASE_ELEM_FACTOR;
-                    normals = static_cast<Vec3*>(std::realloc(normals, sizeof(Vec3) * vn_alloc_count));
+                    normals = static_cast<Vec3f*>(std::realloc(normals, sizeof(Vec3f) * vn_alloc_count));
                 }
 
                 normals[normals_i].x = temp_v[0];
@@ -307,9 +307,9 @@ bool ObjLoader::loadObjFile(const char* filepath, ObjData& dataOut)
                 entered_f = true;
 
                 // shrink memory space previously allocated for all 3 buffers
-                vertices = static_cast<Vec3*>(std::realloc(vertices, sizeof(Vec3) * vertices_i));
-                texcoords = static_cast<Vec2*>(std::realloc(texcoords, sizeof(Vec2) * texcoords_i));
-                normals = static_cast<Vec3*>(std::realloc(normals, sizeof(Vec3) * normals_i));
+                vertices = static_cast<Vec3f*>(std::realloc(vertices, sizeof(Vec3f) * vertices_i));
+                texcoords = static_cast<Vec2f*>(std::realloc(texcoords, sizeof(Vec2f) * texcoords_i));
+                normals = static_cast<Vec3f*>(std::realloc(normals, sizeof(Vec3f) * normals_i));
 
                 // set number of elements for final vertices as well
                 // differentiate from v_count to give us info later how many actual 'v ' is
@@ -385,7 +385,7 @@ bool ObjLoader::loadObjFile(const char* filepath, ObjData& dataOut)
     return 0;
 }
 
-void handle_f_v(int v_index, int vt_index, int vn_index, int* final_vertices_count, int* final_indices_count, Vertex_v1** out_vertices, unsigned int** out_indices, int* latest_used_vertices_index, int* indices_index, Vec3* vertices, Vec2* texcoords, Vec3* normals, DUPS* dup_table)
+void handle_f_v(int v_index, int vt_index, int vn_index, int* final_vertices_count, int* final_indices_count, Vertex_v1** out_vertices, unsigned int** out_indices, int* latest_used_vertices_index, int* indices_index, Vec3f* vertices, Vec2f* texcoords, Vec3f* normals, DUPS* dup_table)
 {
     // get the pointer to vertices and indices to work with
     Vertex_v1* out_vertices_v = *out_vertices;
