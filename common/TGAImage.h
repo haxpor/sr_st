@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Platform.h"
+#include "FrameBuffer.h"
 
 #include <iostream>
 #include <cstring>
@@ -10,10 +11,17 @@ SR_NAMESPACE_START
 class TGAImage
 {
 public:
+
     ///
-    /// Write RGB (24-bit) image .tga image from frambuffer.
-    /// Input framebuffer should be format RGB.
-    static bool write24(const char* filename, unsigned int* frameBuffer, int width, int height)
+    /// Write RGB (24-bit) image .tga image from framebuffer.
+    static bool write24(const char* filename, const sr::FrameBuffer& fb)
+    {
+        return write24(filename, fb.getFrameBuffer(), fb.getWidth(), fb.getHeight());
+    }
+
+    ///
+    /// Write RGB (24-bit) image .tga image from raw pixels pointer in RGB or ARGB format.
+    static bool write24(const char* filename, const unsigned int* frameBuffer, int width, int height)
     {
         FILE *out_file = fopen(filename, "wb");
         if (out_file == nullptr)
