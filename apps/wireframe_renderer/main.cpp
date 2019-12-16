@@ -8,7 +8,7 @@
 /// Bresenham line drawing algorithm.
 /// This covers all cases (all octants).
 /// This function is grabbped from line/ program's line7() function.
-static void line(sr::Vec2i start, sr::Vec2i end, sr::FrameBuffer& fb, unsigned int color)
+static void line_(sr::Vec2i start, sr::Vec2i end, sr::FrameBuffer& fb, unsigned int color)
 {
     bool steep = false;
     if (std::abs(start.x - end.x) < std::abs(start.y - end.y))          // choose range that has more width
@@ -80,7 +80,8 @@ int main()
                     (p2.x * kScale + 1.0f) * fb.getWidth()*0.5f,
                     (p2.y * kScale + 1.0f) * fb.getHeight()*0.5f - 300.0f);
 
-            line(cvtP1, cvtP2, fb, 0xFFFFFFFF);
+            line_(cvtP1, cvtP2, fb, 0xFFFFFFFF);
+            //sr::line(cvtP1, cvtP2, fb, 0xFFFFFFFF);       // the same line function is integrated into common/
         }
     }
     sr::Profile::endAndPrint();
