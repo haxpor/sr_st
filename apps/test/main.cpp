@@ -76,6 +76,9 @@ int main()
     sr::ObjData objdata;
     sr::ObjLoader::loadObjFile("../../res/objs/dragon.obj", objdata);
     sr::Profile::endAndPrint();
+
+    std::cout << "Total vertices: " << objdata.vertices.size() << std::endl;
+    std::cout << "Total faces: " << objdata.faces.size() << std::endl;
     
     return 0;
 }
