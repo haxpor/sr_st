@@ -20,6 +20,8 @@ public:
     /// Set pixel value at target position
     inline void set(int x, int y, unsigned int color)
     {
+        if (x < 0 || x >= width || y < 0 || y >= height)
+            return;
         frameBuffer[x + y*width] = color;
     }
 
