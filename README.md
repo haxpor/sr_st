@@ -24,7 +24,7 @@ Inside `common/` directory, it's common code consisting of the following systems
 
 # Plan
 
-Each program in its separate directory i.e. `wireframe_renderer/` represents validation and testbed
+Each program in its separate directory inside `apps/` i.e. `apps/wireframe_renderer/` represents validation and testbed
 for one or more of software renderer's technique. Whenever it matures, it will be added into the common
 code inside `common/` gradually.
 
