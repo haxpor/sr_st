@@ -3,6 +3,7 @@
 #include "Platform.h"
 #include "Types.h"
 
+#include <vector>
 #include <algorithm>
 
 SR_NAMESPACE_START
@@ -12,16 +13,14 @@ SR_NAMESPACE_START
 /// It supports both copy and move operation.
 struct ObjData
 {
-    Vertex_v1* verticesPtr;
-    unsigned int* indicesPtr;
+    std::vector<sr::Vec3f> vertices;
+    std::vector<std::vector<unsigned int>> faces;
+    /// ... will be more data to load i.e. normals, texture-coord
 
-    int verticesCount;
-    int indicesCount;
-
-    ObjData();
+    ObjData() = default;
     ObjData(const ObjData& other);
     ObjData(ObjData&& other);
-    ~ObjData();
+    ~ObjData() = default;
     ObjData& operator=(const ObjData& other);
     ObjData& operator=(ObjData&& other);
     friend void swap(ObjData& first, ObjData& second) noexcept;
