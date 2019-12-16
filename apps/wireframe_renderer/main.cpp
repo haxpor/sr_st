@@ -63,8 +63,6 @@ int main()
     const int facesCount = faces.size();
     const float kScale = 0.13f;
 
-    std::cout << "dragon.obj: " << modelData.vertices.size() << ", " << modelData.faces.size() << std::endl;
-
     sr::Profile::start();
     for (int i=0; i<facesCount; ++i)
     {
