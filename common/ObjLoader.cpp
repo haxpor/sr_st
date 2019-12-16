@@ -94,6 +94,7 @@ bool ObjLoader::loadObjFile(const char* filepath, ObjData& dataOut)
             {
                 unsigned int idx;
                 iss >> idx >> cdump >> uidump >> cdump >> uidump;
+                --idx;          // index in .obj file is 1-based
                 tmpFaceIndicesList.emplace_back(idx);
             }
 
