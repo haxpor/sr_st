@@ -17,7 +17,7 @@ static constexpr unsigned int makeColorARGB(unsigned char a, unsigned char r, un
 /// This will truncate input parameter to 8-bit then pack into unsigned int for color
 static constexpr unsigned int makeColorARGB(unsigned char r, unsigned char g, unsigned char b)
 {
-    return (r << 16) | (g << 8) | b;
+    return (0xFF << 24) | (r << 16) | (g << 8) | b;
 }
 
 SR_NAMESPACE_END
