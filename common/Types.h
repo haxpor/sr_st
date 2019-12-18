@@ -9,17 +9,32 @@ struct SR_MEM_ALIGN(8) Vec2i
     int x;
     int y;
 
-    Vec2i()
-        : x(0)
-        , y(0)
-    {
-    }
+    Vec2i();
+    Vec2i(int x_, int y_);
+    Vec2i(const Vec2i& other);
+    friend Vec2i operator-(const Vec2i& a);
+    friend Vec2i operator-(const Vec2i& a, const Vec2i& b);
+    friend Vec2i operator+(const Vec2i& a);
+    friend Vec2i operator+(const Vec2i& a, const Vec2i& b);
+    friend Vec2i operator*(const Vec2i& a, const Vec2i& b);
+    friend Vec2i operator/(const Vec2i& a, const Vec2i& b);
 
-    Vec2i(int x_, int y_)
-        : x(x_)
-        , y(y_)
-    {
-    }
+    template <typename T>
+    friend Vec2i operator*(T s, const Vec2i& a);
+
+    template <typename T>
+    friend Vec2i operator*(const Vec2i& a, T s);
+
+    template <typename T>
+    friend Vec2i operator/(T s, const Vec2i& a);
+
+    template <typename T>
+    friend Vec2i operator/(const Vec2i& a, T s);
+
+    Vec2i& operator--();
+    Vec2i operator--(int);
+    Vec2i& operator++();
+    Vec2i operator++(int);
 };
 
 struct SR_MEM_ALIGN(8) Vec2f
@@ -43,17 +58,32 @@ struct SR_MEM_ALIGN(8) Vec2f
         };
     };
 
-    Vec2f()
-        : x(0.0f)
-        , y(0.0f)
-    {
-    }
+    Vec2f();
+    Vec2f(float x_, float y_);
+    Vec2f(const Vec2f& other);
+    friend Vec2f operator-(const Vec2f& a);
+    friend Vec2f operator-(const Vec2f& a, const Vec2f& b);
+    friend Vec2f operator+(const Vec2f& a);
+    friend Vec2f operator+(const Vec2f& a, const Vec2f& b);
+    friend Vec2f operator*(const Vec2f& a, const Vec2f& b);
+    friend Vec2f operator/(const Vec2f& a, const Vec2f& b);
 
-    Vec2f(float x_, float y_)
-        : x(x_)
-        , y(y_)
-    {
-    }
+    template <typename T>
+    friend Vec2f operator*(T s, const Vec2f& a);
+
+    template <typename T>
+    friend Vec2f operator*(const Vec2f& a, T s);
+
+    template <typename T>
+    friend Vec2f operator/(T s, const Vec2f& a);
+
+    template <typename T>
+    friend Vec2f operator/(const Vec2f& a, T s);
+
+    Vec2f& operator--();
+    Vec2f operator--(int);
+    Vec2f& operator++();
+    Vec2f operator++(int);
 };
 
 struct SR_MEM_ALIGN(16) Vec3i
@@ -241,8 +271,7 @@ struct SR_MEM_ALIGN(16) Color32i
 
 };
 
-/// aliased name of floating-point component color32 to Vec4
-typedef Vec4f Color32f;
-
+#include "Types_Vec2i.inl"
+#include "Types_Vec2f.inl"
 
 SR_NAMESPACE_END
