@@ -7,6 +7,17 @@
  *
  * This simulates rendering multiple of circles which will have some overlapped pixels rendered on
  * all tile buffers, then finally combine them altogether.
+ *
+ * Performance Test:
+ * Tested on Intel(R) Core(TM) i5-3210M CPU @ 2.50GHz, 2 cores, 2 threads each, Ubuntu 18.04 with
+ * optimized compilation flags as seen in Makefile.
+ *
+ * It took around ~56 ms (so around 30 fps) to complete the tasks from
+ *  - sorting all circles according to its z value
+ *  - distribute works across multiple threads (4 threads)
+ *  - render works from all threads
+ *  - combine the works from all threads
+ * *doesn't include time in writing out to .tga file.
  */
 #include "SR_Common.h"
 #include <vector>
