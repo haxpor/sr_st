@@ -12,7 +12,7 @@
  * Tested on Intel(R) Core(TM) i5-3210M CPU @ 2.50GHz, 2 cores, 2 threads each, Ubuntu 18.04 with
  * optimized compilation flags as seen in Makefile.
  *
- * It took around ~56 ms (so around 15 fps) to complete the tasks from
+ * It took around ~65 ms (so around 15 fps) to complete the tasks from
  *  - sorting all circles according to its z value
  *  - distribute works across multiple threads (4 threads)
  *  - render works from all threads
@@ -210,21 +210,35 @@ TileIndex determineTileIndex(int x, int y, int nTiles1D)
     return TileIndex(static_cast<int>(std::floor(x / segmentX)), static_cast<int>(std::floor(y / segmentY)));
 }
 
-/// Distribute all rendering works into array of Circles.
+/// Distribute the works then add into target Tile. It internally specifically check to add works for
+/// such Tile.
 ///
 /// \param circles Input array of Circles to render
-/// \param distributedWorks Input pre-declared array of distributed works to hold the result from distributed works. Number of arrays must be exactly AVAILABLE_NUM_THREADS as hinted.
+/// \param distributedWorks Target distributed works specifically for Tile
+/// \param tile Tile to get the works for this distribution
 /// \param nTiles1D Number of tiles along 1 dimension.
 ///
-void distributeWorks(const std::vector<Circle>& circles, std::vector<Circle> distributedWorks[AVAILABLE_NUM_THREADS], const int nTiles1D)
+void distributeWorksForTile(const std::vector<Circle>& circles, std::vector<Circle>& distributedWorks, Tile& tile, const int nTiles1D)
 {
+    Region region = tile.region;
+
     for (const Circle& e : circles)
     {
-        TileIndex ti = determineTileIndex(e.x, e.y, nTiles1D);
-        int dWorkIndex = ti.x + ti.y * nTiles1D;     // convert from 2D into 1D indexing for distributed works vector
-        distributedWorks[dWorkIndex].push_back(e);
+        // check intersection between Circle and Region of Tile
+        const int circleX = e.x - e.radius;
+        const int circleY = e.y - e.radius;
+        const int circleSize = 2 * e.radius;
+
+        if (circleX + circleSize > region.x0 &&
+            circleY + circleSize > region.y0 &&
+            region.x0 + region.width > circleX &&
+            region.y0 + region.height > circleY)
+        {
+            distributedWorks.push_back(e);
+        }
     }
 }
+
 
 ///  Rasterize input Circle
 ///
@@ -311,10 +325,23 @@ int main()
 
     sr::Profile::start();
     sortCirclesFarToNear(circles);
-    distributeWorks(circles, distributedWorks, numTiles1D);
 
-#define SHOW_STATS 1
-#if defined(SHOW_STATS)
+    std::thread ts[AVAILABLE_NUM_THREADS];
+
+    // distribute works
+    // Each thread check and collect elements that will appear in its own frame.
+    // This reduces workload compared to serial implementation that we have to have 4 checks in tight loop
+    // but now we can distribute focusly on 1 check for each thread but each thread has to process
+    // an entire array of circles.
+    for (int i=0; i<AVAILABLE_NUM_THREADS; ++i)
+        ts[i] = std::thread([numTiles1D, i](){
+            distributeWorksForTile(circles, distributedWorks[i], tiles[i], numTiles1D);
+        });
+    for (int i=0; i<AVAILABLE_NUM_THREADS; ++i)
+        ts[i].join();
+
+#define SHOW_STATS 0
+#if SHOW_STATS == 1
     for (int j=0; j<numTiles1D; ++j)
     {
         for (int i=0; i<numTiles1D; ++i)
@@ -326,11 +353,9 @@ int main()
     LOG("total works of %d\n", circles.size());
 #endif
 
-    std::thread ts[AVAILABLE_NUM_THREADS];
-
     // render works
     for (int i=0; i<AVAILABLE_NUM_THREADS; ++i)
-        ts[i] = std::thread([&lineSize](int i){
+        ts[i] = std::thread([lineSize](int i){
             renderWork(distributedWorks[i], tiles[i], lineSize);
         }, i);
     for (int i=0; i<AVAILABLE_NUM_THREADS; ++i)
