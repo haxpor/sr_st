@@ -49,6 +49,13 @@ struct Region
         , height(height_)
     {
     }
+
+    friend std::ostream& operator<<(std::ostream& os, const Region& r)
+    {
+        os << "x0: " << r.x0 << ", y0: " << r.y0 << ", x1: " << r.x1 << ", y1: " << r.y1 << ", width: "
+           << r.width << ", height: " << r.height;
+        return os;
+    }
 };
 
 struct Circle
@@ -181,8 +188,8 @@ TileIndex determineTileIndex(int x, int y, int nTiles1D)
 {
     // TODO: Return the list of tile index such Circle lives in. It could be at most 3 adjacent tiles
     // for one Circle can live in according to its radius.
-    const float segmentX = SIZE / nTiles1D;
-    const float segmentY = SIZE / nTiles1D;     // although supported only squared screen size, we leave this line here for future addition, but
+    static const float segmentX = std::floor(SIZE / nTiles1D) + 1;
+    static const float segmentY = std::floor(SIZE / nTiles1D) + 1;     // although supported only squared screen size, we leave this line here for future addition, but
                                                 // actually no need to compute height for each tile again as we already had width
     return TileIndex(static_cast<int>(std::floor(x / segmentX)), static_cast<int>(std::floor(y / segmentY)));
 }
@@ -210,11 +217,14 @@ void distributeWorks(const std::vector<Circle>& circles, std::vector<Circle> dis
 /// \param lineSize LineSize which is width of each tile
 void rasterize(const Circle& c, Tile& tile, const int lineSize)
 {
+    const int tileOffsetX = tile.region.x0;
+    const int tileOffsetY = tile.region.y0;
+
     const int startX = c.x - c.radius;
     const int startY = c.y - c.radius;
 
-    const int endX = startX + 2*c.radius;
-    const int endY = startY + 2*c.radius;
+    const int endX = c.x + c.radius;
+    const int endY = c.y + c.radius;
 
     const Region region = tile.region;
     
@@ -222,11 +232,15 @@ void rasterize(const Circle& c, Tile& tile, const int lineSize)
     {
         for (int x=startX; x<=endX; ++x)
         {
-            if (x < region.x0 || x >= region.x1)
+            if (x < region.x0 || x > region.x1)
                 continue;
-            if (y < region.y0 || y >= region.y1)
+            if (y < region.y0 || y > region.y1)
                 continue;
-            const int fbIndex = x + y*lineSize;
+
+            // take into account region offset of this particular tile
+            // as tile doesn't have full final framebuffer size
+            const int fbIndex = (x-tile.region.x0) + (y-tileOffsetY)*lineSize;
+            
             tile.color[fbIndex] = c.color.packed;
         }
     }
@@ -246,23 +260,23 @@ void renderWork(const std::vector<Circle>& works, Tile& tile, const int lineSize
 }
 
 /// Combine work from input tile then output into target framebuffer
-void combineWork(const Tile& tile, sr::FrameBuffer& fb, const int workIndex)
+void combineWork(const Tile& tile, sr::FrameBuffer& fb)
 {
     std::cout << "combine work from addr:" << reinterpret_cast<uintptr_t>(&tile) << std::endl;
     unsigned int* fbPtr = fb.getFrameBuffer();
 
     const int kTileSize = tile.region.width;
+    const int dstWidth = fb.getWidth();
     
-    const int srcStartX = tile.region.x0;
-    const int srcStartY = tile.region.y0;
-    const int srcWidth = fb.getWidth();
+    const int dstStartX = tile.region.x0;
+    const int dstStartY = tile.region.y0;
 
-    for (int y=0, srcY=srcStartY; y<kTileSize; ++y, ++srcY)
+    for (int y=0, dstY=dstStartY; y<kTileSize; ++y, ++dstY)
     {
-        for (int x=0, srcX=srcStartX; x<kTileSize; ++x, ++srcX)
+        for (int x=0, dstX=dstStartX; x<kTileSize; ++x, ++dstX)
         {
             const int srcIndex = x + y*kTileSize;
-            const int dstIndex = srcX + srcY*srcWidth;
+            const int dstIndex = dstX + dstY*dstWidth;
             fbPtr[dstIndex] = tile.color[srcIndex];
         }
     }
@@ -277,19 +291,34 @@ int main()
     int numTiles1D;
     computeNumTilesFromNumThreads(AVAILABLE_NUM_THREADS, numTiles1D, numTiles);
     const int lineSize = preAllocateSpaceForTiles(tiles, numTiles1D);
-    generateCircles(circles, 20);
+    generateCircles(circles, 5000);
+
+    std::cout << "1: " << tiles[0].color.size() << std::endl;
+    std::cout << "2: " << tiles[1].color.size() << std::endl;
+    std::cout << "3: " << tiles[2].color.size() << std::endl;
+    std::cout << "4: " << tiles[3].color.size() << std::endl;
+
+    std::cout << "1: " << tiles[0].region << std::endl;
+    std::cout << "2: " << tiles[1].region << std::endl;
+    std::cout << "3: " << tiles[2].region << std::endl;
+    std::cout << "4: " << tiles[3].region << std::endl;
 
     sr::Profile::start();
     sortCirclesFarToNear(circles);
     distributeWorks(circles, distributedWorks, numTiles1D);
 
-    //for (int j=0; j<numTiles1D; ++j)
-    //{
-    //    for (int i=0; i<numTiles1D; ++i)
-    //    {
-    //        std::cout << "distributedWorks[" << j << "][" << i << "] = " << distributedWorks[i + j*2].size() << " works" << std::endl;
-    //    }
-    //}
+#define SHOW_STATS 1
+#if defined(SHOW_STATS)
+    for (int j=0; j<numTiles1D; ++j)
+    {
+        for (int i=0; i<numTiles1D; ++i)
+        {
+            const int works = distributedWorks[i + j*numTiles1D].size();
+            LOG("distributedWorks[%d][%d] = %lu works [%.3f%%]\n", i, j, works, static_cast<float>(works) / circles.size()); 
+        }
+    }
+    LOG("total works of %d\n", circles.size());
+#endif
 
     std::thread ts[AVAILABLE_NUM_THREADS];
 
@@ -304,7 +333,7 @@ int main()
     // combine works
     for (int i=0; i<AVAILABLE_NUM_THREADS; ++i)
         ts[i] = std::thread([&fb](int i){
-            combineWork(tiles[i], fb, i);           
+            combineWork(tiles[i], fb);           
         }, i);
     for (int i=0; i<AVAILABLE_NUM_THREADS; ++i)
         ts[i].join();
