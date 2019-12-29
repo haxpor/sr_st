@@ -4,6 +4,11 @@
 
 SR_NAMESPACE_START
 
+#if defined(__GNUC__) || defined(__GNUG__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+#endif
+
 struct SR_MEM_ALIGN(8) Vec2i
 {
     int x;
@@ -273,5 +278,9 @@ struct SR_MEM_ALIGN(16) Color32i
 
 #include "Types_Vec2i.inl"
 #include "Types_Vec2f.inl"
+
+#if defined(__GNUC__) || defined(__GNUG__)
+#pragma GCC diagnostic pop
+#endif
 
 SR_NAMESPACE_END
