@@ -62,7 +62,7 @@ public:
             }
         }
 
-        if (fwrite(cvtFrameBuffer, sizeof(cvtFrameBuffer), 1, out_file) != 1)
+        if (fwrite(cvtFrameBuffer, cvtBufferSize, 1, out_file) != 1)
         {
             std::cerr << "Error writing image data section for .tga file";
             fclose(out_file);
