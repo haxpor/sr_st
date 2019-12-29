@@ -22,16 +22,22 @@ public:
     /// This function is non-thread-safe.
     inline static void endAndPrint()
     {
-        auto now = std::chrono::steady_clock::now();
-        LOG(" execution elapsed %lu ms (%lu s)\n", std::chrono::duration_cast<std::chrono::milliseconds>(now - gProfile_startTime).count(), std::chrono::duration_cast<std::chrono::seconds>(now - gProfile_startTime).count());
+        const auto now = std::chrono::steady_clock::now();
+        const auto diff = now - gProfile_startTime;
+        LOG(" execution elapsed %lu ms (%lu s)\n",
+                std::chrono::duration_cast<std::chrono::milliseconds>(diff).count(),
+                std::chrono::duration_cast<std::chrono::seconds>(diff).count());
     }
 
     ///
     /// Mark the end time of profiling then printing out to console in thread-safe manner.
     inline static void endAndPrintA()
     {
-        auto now = std::chrono::steady_clock::now();
-        LOGA(" execution elapsed %lu ms (%lu s)\n", std::chrono::duration_cast<std::chrono::milliseconds>(now - gProfile_startTime).count(), std::chrono::duration_cast<std::chrono::seconds>(now - gProfile_startTime).count());
+        const auto now = std::chrono::steady_clock::now();
+        const auto diff = now - gProfile_startTime;
+        LOGA(" execution elapsed %lu ms (%lu s)\n",
+                std::chrono::duration_cast<std::chrono::milliseconds>(diff).count(),
+                std::chrono::duration_cast<std::chrono::seconds>(diff).count());
     }
 
     ///
