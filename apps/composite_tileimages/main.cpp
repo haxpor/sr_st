@@ -12,12 +12,15 @@
  * Tested on Intel(R) Core(TM) i5-3210M CPU @ 2.50GHz, 2 cores, 2 threads each, Ubuntu 18.04 with
  * optimized compilation flags as seen in Makefile.
  *
- * It took around ~56 ms (so around 30 fps) to complete the tasks from
+ * It took around ~56 ms (so around 15 fps) to complete the tasks from
  *  - sorting all circles according to its z value
  *  - distribute works across multiple threads (4 threads)
  *  - render works from all threads
  *  - combine the works from all threads
  * *doesn't include time in writing out to .tga file.
+ *
+ * Serial implementation took ~105 ms which is doubled from multithreading implementation. Seems
+ * reasonable. If machine has more core, it would be performing better.
  */
 #include "SR_Common.h"
 #include <vector>
@@ -250,7 +253,7 @@ void rasterize(const Circle& c, Tile& tile, const int lineSize)
 
             // take into account region offset of this particular tile
             // as tile doesn't have full final framebuffer size
-            const int fbIndex = (x-tile.region.x0) + (y-tileOffsetY)*lineSize;
+            const int fbIndex = (x-tileOffsetX) + (y-tileOffsetY)*lineSize;
             
             tile.color[fbIndex] = c.color.packed;
         }
@@ -303,16 +306,6 @@ int main()
     computeNumTilesFromNumThreads(AVAILABLE_NUM_THREADS, numTiles1D, numTiles);
     const int lineSize = preAllocateSpaceForTiles(tiles, numTiles1D);
     generateCircles(circles, 5000);
-
-    std::cout << "1: " << tiles[0].color.size() << std::endl;
-    std::cout << "2: " << tiles[1].color.size() << std::endl;
-    std::cout << "3: " << tiles[2].color.size() << std::endl;
-    std::cout << "4: " << tiles[3].color.size() << std::endl;
-
-    std::cout << "1: " << tiles[0].region << std::endl;
-    std::cout << "2: " << tiles[1].region << std::endl;
-    std::cout << "3: " << tiles[2].region << std::endl;
-    std::cout << "4: " << tiles[3].region << std::endl;
 
     sr::Profile::start();
     sortCirclesFarToNear(circles);
