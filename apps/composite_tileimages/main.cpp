@@ -202,6 +202,8 @@ TileIndex determineTileIndex(int x, int y, int nTiles1D)
 {
     // TODO: Return the list of tile index such Circle lives in. It could be at most 3 adjacent tiles
     // for one Circle can live in according to its radius.
+    //
+    // Note: + 1 to not make pixel at the border increment index number which will lead to crash later
     static const float segmentX = std::floor(SIZE / nTiles1D) + 1;
     static const float segmentY = std::floor(SIZE / nTiles1D) + 1;     // although supported only squared screen size, we leave this line here for future addition, but
                                                 // actually no need to compute height for each tile again as we already had width
