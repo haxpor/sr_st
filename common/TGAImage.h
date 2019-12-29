@@ -49,7 +49,7 @@ public:
         }
 
         const int cvtBufferSize = width * height * 3;
-        unsigned char cvtFrameBuffer[cvtBufferSize];
+        unsigned char* cvtFrameBuffer = new unsigned char[cvtBufferSize];
         int cvtI = 0;
         for (int j=0; j<height; ++j)
         {
@@ -68,6 +68,9 @@ public:
             fclose(out_file);
             return false;
         }
+
+        delete[] cvtFrameBuffer;
+        cvtFrameBuffer = nullptr;
 
         // close file
         fclose(out_file);
