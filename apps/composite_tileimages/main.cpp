@@ -12,7 +12,10 @@
  * Tested on Intel(R) Core(TM) i5-3210M CPU @ 2.50GHz, 2 cores, 2 threads each, Ubuntu 18.04 with
  * optimized compilation flags as seen in Makefile.
  *
- * It took around ~65 ms (so around 15 fps) to complete the tasks from
+ * It took around ~65 ms (so around 15 fps) for rectangular shape, but for circle, this increases to
+ * ~93 ms. This shows impact from branching within tight loop (see branch prediction for more information)
+ * 
+ * The tasks to complete are as follows
  *  - sorting all circles according to its z value
  *  - distribute works across multiple threads (4 threads)
  *  - render works from all threads
@@ -250,11 +253,16 @@ void rasterize(const Circle& c, Tile& tile, const int lineSize)
     const int tileOffsetX = tile.region.x0;
     const int tileOffsetY = tile.region.y0;
 
-    const int startX = c.x - c.radius;
-    const int startY = c.y - c.radius;
+    const int centerX = c.x;
+    const int centerY = c.y;
+    const int radius = c.radius;
+    const int squaredRadius = radius * radius;
 
-    const int endX = c.x + c.radius;
-    const int endY = c.y + c.radius;
+    const int startX = centerX - radius;
+    const int startY = centerY - radius;
+
+    const int endX = centerX + radius;
+    const int endY = centerY + radius;
 
     const Region region = tile.region;
     
@@ -265,6 +273,11 @@ void rasterize(const Circle& c, Tile& tile, const int lineSize)
             if (x < region.x0 || x > region.x1)
                 continue;
             if (y < region.y0 || y > region.y1)
+                continue;
+
+            const int dx = x - centerX;
+            const int dy = y - centerY;
+            if (dx*dx + dy*dy > squaredRadius)
                 continue;
 
             // take into account region offset of this particular tile
