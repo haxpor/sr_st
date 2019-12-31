@@ -307,7 +307,6 @@ void renderWork(const std::vector<Circle>& works, Tile& tile, const int lineSize
 /// Combine work from input tile then output into target framebuffer
 void combineWork(const Tile& tile, sr::FrameBuffer& fb)
 {
-    std::cout << "combine work from addr:" << reinterpret_cast<uintptr_t>(&tile) << std::endl;
     unsigned int* fbPtr = fb.getFrameBuffer();
 
     const int kTileSize = tile.region.width;
