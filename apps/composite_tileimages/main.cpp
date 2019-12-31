@@ -13,7 +13,7 @@
  * optimized compilation flags as seen in Makefile.
  *
  * It took around ~65 ms (so around 15 fps) for rectangular shape, but for circle, this increases to
- * ~93 ms. This shows impact from branching within tight loop (see branch prediction for more information)
+ * ~78 ms. This shows impact from branching within tight loop (see branch prediction for more information)
  * 
  * The tasks to complete are as follows
  *  - sorting all circles according to its z value
@@ -75,13 +75,15 @@ struct Region
     }
 };
 
-struct Circle
+/// aligned to cache line size, reduce by ~10ms
+struct __attribute__((aligned(64))) Circle
 {
     int x;
     int y;
     int radius;
     int z;
     sr::Color32i color;
+    char padded[44];            
 
     Circle(int x_, int y_, int radius_, int z_, sr::Color32i color_)
         : x(x_)
@@ -221,7 +223,7 @@ TileIndex determineTileIndex(int x, int y, int nTiles1D)
 /// \param tile Tile to get the works for this distribution
 /// \param nTiles1D Number of tiles along 1 dimension.
 ///
-void distributeWorksForTile(const std::vector<Circle>& circles, std::vector<Circle>& distributedWorks, Tile& tile, const int nTiles1D)
+void distributeWorksForTile(const std::vector<Circle>& circles, std::vector<Circle>& distributedWorks, Tile& tile)
 {
     Region region = tile.region;
 
@@ -348,7 +350,7 @@ int main()
     // an entire array of circles.
     for (int i=0; i<AVAILABLE_NUM_THREADS; ++i)
         ts[i] = std::thread([numTiles1D, i](){
-            distributeWorksForTile(circles, distributedWorks[i], tiles[i], numTiles1D);
+            distributeWorksForTile(circles, distributedWorks[i], tiles[i]);
         });
     for (int i=0; i<AVAILABLE_NUM_THREADS; ++i)
         ts[i].join();
