@@ -29,6 +29,7 @@
 #include <vector>
 #include <cmath>
 #include <thread>
+#include <cstring>
 
 /// Screen size. For this implementation supports only squared size.
 #define SIZE 1024
@@ -308,21 +309,19 @@ void renderWork(const std::vector<Circle>& works, Tile& tile, const int lineSize
 void combineWork(const Tile& tile, sr::FrameBuffer& fb)
 {
     unsigned int* fbPtr = fb.getFrameBuffer();
-
-    const int kTileSize = tile.region.width;
-    const int dstWidth = fb.getWidth();
     
     const int dstStartX = tile.region.x0;
     const int dstStartY = tile.region.y0;
+    const int dstWidth = fb.getWidth();
 
-    for (int y=0, dstY=dstStartY; y<kTileSize; ++y, ++dstY)
+    const int kTileSize = tile.region.width;
+
+    // copy row by row from source to destination
+    for (int y=0; y<kTileSize; ++y)
     {
-        for (int x=0, dstX=dstStartX; x<kTileSize; ++x, ++dstX)
-        {
-            const int srcIndex = x + y*kTileSize;
-            const int dstIndex = dstX + dstY*dstWidth;
-            fbPtr[dstIndex] = tile.color[srcIndex];
-        }
+        const int dstIndex = dstStartX + (dstStartY+y)*dstWidth;
+        const int srcIndex = y*kTileSize;
+        std::memcpy(&fbPtr[dstIndex], &tile.color[srcIndex], sizeof(decltype(tile.color)::value_type) * kTileSize);
     }
 }
 
