@@ -4,6 +4,7 @@
 
 SR_NAMESPACE_START
 
+// for GCC, this is to suppress the warning about using anonymous unnamed struct/union
 #if defined(__GNUC__) || defined(__GNUG__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpedantic"
