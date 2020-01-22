@@ -143,3 +143,13 @@ inline Vec3<T> Vec3<T>::operator++(int)
     operator++();
     return ret;
 }
+
+template <typename T>
+inline Vec3<T> Vec3<T>::cross(const Vec3<T>& v) const
+{
+    // use Sarrus's rule (or cofactor expansion) to find cross product which can be expressed as
+    // formal determinant
+    return Vec3<T>(y*v.z - z*v.y,
+                   z*v.x - x*v.z,
+                   x*v.y - y*v.x);
+}

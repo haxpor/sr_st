@@ -116,6 +116,8 @@ struct SR_MEM_ALIGN(16) Vec3
     Vec3<T> operator--(int);
     Vec3<T>& operator++();
     Vec3<T> operator++(int);
+
+    Vec3<T> cross(const Vec3<T>& v) const;
 };
 
 template <typename T>
