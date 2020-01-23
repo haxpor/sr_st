@@ -36,6 +36,18 @@ int main()
     assert(vec2f.y == vec2f.v && "y should equal to v");
     assert(vec2f.y == vec2f.t && "y should equal to t");
 
+    // Vec3f
+    sr::Vec3f vec3f = sr::Vec3f(1.0f, 1.0f, 1.0f);
+    std::cout << vec3f.x << ", " << vec3f.y << ", " << vec3f.z << std::endl;
+    vec3f.normalize();
+    std::cout << vec3f.x << ", " << vec3f.y << ", " << vec3f.z << std::endl;
+    assert(vec3f.x - 0.57735f <= 0.0001f && "x component should equal 0.57735f");
+    assert(vec3f.y - 0.57735f <= 0.0001f && "y component should equal 0.57735f");
+    assert(vec3f.z - 0.57735f <= 0.0001f && "z component should equal 0.57735f");
+
+    float vec3fDot = sr::dot(vec3f, vec3f);
+    assert(vec3fDot == (vec3f.x*vec3f.x + vec3f.y*vec3f.y + vec3f.z*vec3f.z) && "Wrong result of dot product");
+
     // Color32i
     sr::Color32i colori = sr::Color32i(255, 0, 255, 255);
     std::cout << colori.packed << std::endl;
