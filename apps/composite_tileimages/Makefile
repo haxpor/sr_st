@@ -3,7 +3,7 @@ CXXFLAGS = -g -std=c++11 -O2 -Wall -Wextra -pedantic -Wno-gnu-anonymous-struct -
 CXXLDFLAGS = -lpthread -lm
 
 SOURCES = main.cpp
-SOURCES += ../../common/ObjLoader.cpp ../../common/Logger.cpp ../../common/Profile.cpp
+SOURCES += ../../common/ObjLoader.cpp ../../common/Logger.cpp ../../common/Profile.cpp ../../common/Graphics.cpp
 HEADERS += ../../common/Logger.h ../../common/MathUtil.h ../../common/ObjLoader.h ../../common/Platform.h ../../common/Profile.h ../../common/SR_Common.h ../../common/TGAImage.h ../../common/Types.h ../../common/GraphicsUtil.h
 
 OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
@@ -26,3 +26,4 @@ $(EXE): $(OBJS)
 
 clean:
 	rm -f $(EXE) $(OBJS)
+	rm -f out.tga
