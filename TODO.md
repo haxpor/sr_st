@@ -1,3 +1,3 @@
 # Roadmap TODO
 
-* [] Support MSVC across the board
+* [ ] Support MSVC across the board
