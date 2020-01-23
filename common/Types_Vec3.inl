@@ -2,6 +2,7 @@
 /// (header inclusion guard should be done already via its parent header Types.h
 
 #include "Platform.h"
+
 SR_NAMESPACE_USING
 
 template <typename T>
@@ -144,12 +145,28 @@ inline Vec3<T> Vec3<T>::operator++(int)
     return ret;
 }
 
-template <typename T>
-inline Vec3<T> Vec3<T>::cross(const Vec3<T>& v) const
+template <typename U>
+inline Vec3<U> cross(const Vec3<U>& u, const Vec3<U>& v)
 {
     // use Sarrus's rule (or cofactor expansion) to find cross product which can be expressed as
     // formal determinant
-    return Vec3<T>(y*v.z - z*v.y,
-                   z*v.x - x*v.z,
-                   x*v.y - y*v.x);
+    return Vec3<U>(u.y*v.z - u.z*v.y,
+                   u.z*v.x - u.x*v.z,
+                   u.x*v.y - u.y*v.x);
+}
+
+template <typename U>
+inline U dot(const Vec3<U>& u, const Vec3<U>& v)
+{
+    return u.x*v.x + u.y*v.y + u.z*v.z;
+}
+
+template <typename T>
+inline void Vec3<T>::normalize()
+{
+    // intentionally avoided dereference (*)
+    T length = std::sqrt(x*x + y*y + z*z);
+    x /= length;
+    y /= length;
+    z /= length;
 }

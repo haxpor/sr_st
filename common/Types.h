@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Platform.h"
+#include <cmath>
 
 SR_NAMESPACE_START
 
@@ -117,7 +118,13 @@ struct SR_MEM_ALIGN(16) Vec3
     Vec3<T>& operator++();
     Vec3<T> operator++(int);
 
-    Vec3<T> cross(const Vec3<T>& v) const;
+    template <typename U>
+    friend Vec3<U> cross(const Vec3<U>& u, const Vec3<U>& v);
+
+    template <typename U>
+    friend U dot(const Vec3<U>& u, const Vec3<U>& v);
+
+    void normalize();
 };
 
 template <typename T>
