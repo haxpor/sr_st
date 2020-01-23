@@ -90,8 +90,6 @@ static void triangle2(sr::Vec2i t0, sr::Vec2i t1, sr::Vec2i t2, sr::FrameBuffer&
 }
 
 // More optimize and different approach in rendering triangle.
-// Assume that input vertices are within the boundary of framebuffer's resolution.
-// This function works with barycentric() function.
 static void triangle3(sr::Vec2i t0, sr::Vec2i t1, sr::Vec2i t2, sr::FrameBuffer& fb, sr::Color32i color)
 {
     const int maxW = fb.getWidth() - 1;
@@ -102,12 +100,22 @@ static void triangle3(sr::Vec2i t0, sr::Vec2i t1, sr::Vec2i t2, sr::FrameBuffer&
     sr::Vec2i bbMax(0, 0);
 
     // find minimum x/y
-    bbMin.x = std::max(0, std::min({bbMin.x, t0.x, t1.x, t2.x}));
-    bbMin.y = std::max(0, std::min({bbMin.y, t0.y, t1.y, t2.y}));
+    bbMin.x = std::max(0, std::min(bbMin.x, t0.x));
+    bbMin.x = std::max(0, std::min(bbMin.x, t1.x));
+    bbMin.x = std::max(0, std::min(bbMin.x, t2.x));
+
+    bbMin.y = std::max(0, std::min(bbMin.y, t0.y));
+    bbMin.y = std::max(0, std::min(bbMin.y, t1.y));
+    bbMin.y = std::max(0, std::min(bbMin.y, t2.y));
 
     // find maximum x/y
-    bbMax.x = std::min(maxW, std::max({bbMax.x, t0.x, t1.x, t2.x}));
-    bbMax.y = std::max(maxH, std::max({bbMax.y, t0.y, t1.y, t2.y}));
+    bbMax.x = std::min(maxW, std::max(bbMax.x, t0.x));
+    bbMax.x = std::min(maxW, std::max(bbMax.x, t1.x));
+    bbMax.x = std::min(maxW, std::max(bbMax.x, t2.x));
+
+    bbMax.y = std::min(maxH, std::max(bbMax.y, t0.y));
+    bbMax.y = std::min(maxH, std::max(bbMax.y, t1.y));
+    bbMax.y = std::min(maxH, std::max(bbMax.y, t2.y));
 
     sr::Vec2i p;
     for (p.x = bbMin.x; p.x<=bbMax.x; ++p.x)
@@ -131,9 +139,9 @@ int main()
     sr::Vec2i t2[3] = {sr::Vec2i(180, 150), sr::Vec2i(120, 160), sr::Vec2i(130, 180)};
 
     sr::Profile::start();
-    triangle2(t0[0], t0[1], t0[2], fb, red.packed);
-    triangle2(t1[0], t1[1], t1[2], fb, white.packed);
-    triangle2(t2[0], t2[1], t2[2], fb, green.packed);
+    triangle3(t0[0], t0[1], t0[2], fb, red);
+    triangle3(t1[0], t1[1], t1[2], fb, white);
+    triangle3(t2[0], t2[1], t2[2], fb, green);
     sr::Profile::endAndPrint();
 
     sr::TGAImage::write24("out.tga", fb);
