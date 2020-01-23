@@ -61,7 +61,7 @@ public:
     /// \param p3 C position in 2d of a triangle
     /// \param p A target position to get the barycentric coordindate from
     /// \return sr::Vec3f of barycentric coordinate.
-    static sr::Vec3f barycentric(const sr::Vec2i& p1, const sr::Vec2i& p2, const sr::Vec2i& p3, const sr::Vec2i& p)
+    static inline sr::Vec3f barycentric(const sr::Vec2i& p1, const sr::Vec2i& p2, const sr::Vec2i& p3, const sr::Vec2i& p)
     {
         // ref: https://en.wikipedia.org/wiki/Barycentric_coordinate_system at "Conversion between
         // barycentric and Cartesian coordinates" section in the form of T x alpha = r - r3.
