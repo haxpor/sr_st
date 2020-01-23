@@ -13,7 +13,9 @@ Just go there, and hit `make`.
 
 Inside `common/` directory, it's common code consisting of the following systems
 
+* `Platform` - platform related utility and macros
 * `FrameBuffer` - act as holder for pixels before writing into image file
+* `Graphics` - main graphics functions
 * `GraphicsUtil` - utility graphics functions
 * `Logger` - logging utlity to standard output, or standard error output
 * `MathUtil` - math related utility functions i.e. random integer or floating-point number
@@ -27,6 +29,8 @@ Inside `common/` directory, it's common code consisting of the following systems
 Each program in its separate directory inside `apps/` i.e. `apps/wireframe_renderer/` represents validation and testbed
 for one or more of software renderer's technique. Whenever it matures, it will be added into the common
 code inside `common/` gradually.
+
+See [TODO](TODO.md) for roadmap and TODO.
 
 # License
 
