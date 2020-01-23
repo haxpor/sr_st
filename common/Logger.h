@@ -94,11 +94,31 @@ public:
 
     ///
     /// Log to standard output.
+    /// This is to avoid compiler's warning of 'format-security'.
+    ///
+    /// This is not thread-safe.
+    inline static void Log(const char* str)
+    {
+	LogFS(stdout, "%s", str);
+    }
+
+    ///
+    /// Log to standard output.
     /// This is not thread-safe.
     template<typename... Args>
     inline static void Log(const char* fmt, Args&&... args)
     {
         LogFS(stdout, fmt, std::forward<Args>(args)...);
+    }
+
+    ///
+    /// Log to standard output with color.
+    /// This is to avoid compiler's warning of 'format-security'.
+    ///
+    /// This is not thread-safe.
+    inline static void Log(TextColor tc, const char* str)
+    {
+	LogFS(stdout, tc, "%s", str);
     }
 
     ///
@@ -111,12 +131,32 @@ public:
     }
 
     ///
+    /// Log to standard error.
+    /// This is to avoid compiler's warning of 'format-security'.
+    ///
+    /// This is not thread-safe.
+    inline static void LogE(const char* str)
+    {
+	LogFS(stderr, "%s", str);
+    }
+
+    ///
     /// Log to standard error output.
     /// This is not thread-safe.
     template<typename... Args>
     inline static void LogE(const char* fmt, Args&&... args)
     {
         LogFS(stderr, fmt, std::forward<Args>(args)...);
+    }
+
+    ///
+    /// Log to standard error with error.
+    /// This is to avoid compiler's warning of 'format-security'.
+    ///
+    /// This is not thread-safe.
+    inline static void LogE(TextColor tc, const char* str)
+    {
+	LogFS(stderr, tc, "%s", str);
     }
 
     ///
@@ -170,11 +210,31 @@ public:
 
     ///
     /// Log to standard output.
+    /// This is to avoid compiler's warning of 'format-security'.
+    ///
+    /// This is thread-safe.
+    inline static void LogA(const char* str)
+    {
+	LogAFS(stdout, "%s", str);
+    }
+
+    ///
+    /// Log to standard output.
     /// This is thread-safe.
     template <typename... Args>
     inline static void LogA(const char* fmt, Args&&... args)
     {
         LogAFS(stdout, fmt, std::forward<Args>(args)...);
+    }
+
+    ///
+    /// Log to standard output with color.
+    /// This is to avoid compiler's warning of 'format-security'.
+    ///
+    /// This is thread-safe.
+    inline static void LogA(TextColor tc, const char* str)
+    {
+	LogAFS(stdout, tc, "%s", str);
     }
 
     ///
@@ -187,12 +247,32 @@ public:
     }
 
     ///
+    /// Log to standard error with color.
+    /// This is to avoid compiler's warning of 'format-security'.
+    ///
+    /// This is thread-safe.
+    inline static void LogAE(const char* str)
+    {
+	LogAFS(stderr, "%s", str);
+    }
+
+    ///
     /// Log to standard error output.
     /// This is thread-safe.
     template <typename... Args>
     inline static void LogAE(const char* fmt, Args&&... args)
     {
         LogAFS(stderr, fmt, std::forward<Args>(args)...);
+    }
+
+    ///
+    /// Log to standard error with color.
+    /// This is to avoid compiler's warning of 'format-security'.
+    ///
+    /// This is thread-safe.
+    inline static void LogAE(TextColor tc, const char* str)
+    {
+	LogAFS(stderr, tc, "%s", str);
     }
 
     ///
