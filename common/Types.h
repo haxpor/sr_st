@@ -230,6 +230,42 @@ struct SR_MEM_ALIGN(16) Color32i
 
 };
 
+/// format floating-point ARGB color
+struct Color32f
+{
+    struct
+    {
+        float b;
+        float g;
+        float r;
+        float a;
+    };
+
+    Color32f()
+        : b(0.0f)
+        , g(0.0f)
+        , r(0.0f)
+        , a(0.0f)
+    {
+    }
+
+    Color32f(float r_, float g_, float b_, float a_)
+        : b(b_)
+        , g(g_)
+        , r(r_)
+        , a(a_)
+    {
+    }
+
+    Color32f(float r_, float g_, float b_)
+        : b(b_)
+        , g(g_)
+        , r(r_)
+        , a(1.0f)
+    {
+    }
+};
+
 #include "Types_Vec2.inl"
 #include "Types_Vec3.inl"
 #include "Types_Vec4.inl"
