@@ -40,6 +40,7 @@ public:
         header[14] = height & 0x00FF; // low-order bytes for height
         header[15] = (height & 0xFF00) >> 8; // high-order bytes for height
         header[16] = 24;  // number of bits per pixel
+	    header[17] = 1 << 5;	// make it flip vertically with origin at upper left-hand corner
 
         if (fwrite(header, sizeof(header), 1, out_file) != 1)
         {
