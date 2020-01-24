@@ -383,6 +383,6 @@ int main()
         ts[i].join();
     sr::Profile::endAndPrint();
 
-    sr::TGAImage::write24("out.tga", fb);
+    sr::TGAImage::write24("out.tga", fb, true);
     return 0;
 }
