@@ -14,14 +14,14 @@ public:
 
     ///
     /// Write RGB (24-bit) image .tga image from framebuffer.
-    static bool write24(const char* filename, const sr::FrameBuffer& fb)
+    static bool write24(const char* filename, const sr::FrameBuffer& fb, bool flipY=false)
     {
-        return write24(filename, fb.getFrameBuffer(), fb.getWidth(), fb.getHeight());
+        return write24(filename, fb.getFrameBuffer(), fb.getWidth(), fb.getHeight(), flipY);
     }
 
     ///
     /// Write RGB (24-bit) image .tga image from raw pixels pointer in RGB or ARGB format.
-    static bool write24(const char* filename, const unsigned int* frameBuffer, int width, int height)
+    static bool write24(const char* filename, const unsigned int* frameBuffer, int width, int height, bool flipY=false)
     {
         FILE *out_file = fopen(filename, "wb");
         if (out_file == nullptr)
@@ -40,7 +40,9 @@ public:
         header[14] = height & 0x00FF; // low-order bytes for height
         header[15] = (height & 0xFF00) >> 8; // high-order bytes for height
         header[16] = 24;  // number of bits per pixel
-	    header[17] = 1 << 5;	// make it flip vertically with origin at upper left-hand corner
+
+        if (flipY)
+	        header[17] = 1 << 5;	// make it flip vertically with origin at upper left-hand corner
 
         if (fwrite(header, sizeof(header), 1, out_file) != 1)
         {
