@@ -9,6 +9,10 @@ SR_NAMESPACE_START
 class FrameBuffer
 {
 public:
+    typedef unsigned int type;
+    typedef const unsigned int* const_pointer;
+
+public:
     FrameBuffer(int width, int height)
         : width(width)
         , height(height)
@@ -40,6 +44,16 @@ public:
     inline const unsigned int* getFrameBuffer() const
     {
         return &frameBuffer[0];
+    }
+
+    inline unsigned int operator[](int i) const
+    {
+        return frameBuffer[i];
+    }
+
+    inline unsigned int& operator[](int i)
+    {
+        return frameBuffer[i];
     }
 
     inline int getWidth() const { return width; }
