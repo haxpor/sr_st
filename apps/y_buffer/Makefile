@@ -8,7 +8,7 @@ HEADERS += ../../common/Logger.h ../../common/MathUtil.h ../../common/ObjLoader.
 
 OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
 
-EXE = z_buffer.out
+EXE = y_buffer.out
 
 .PHONY: all clean
 
@@ -27,3 +27,4 @@ $(EXE): $(OBJS)
 clean:
 	rm -f $(EXE) $(OBJS)
 	rm -f out.tga
+	rm -f yBuffer.tga
