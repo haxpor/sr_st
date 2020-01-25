@@ -3,6 +3,10 @@
 
 ///
 /// Line rasterization function
+/// \param start Screen space starting position of the line
+/// \param end Screen space ending position of the line
+/// \param fb Color framebuffer
+/// \param color Color for the line
 void sr::line(sr::Vec2i start, sr::Vec2i end, sr::FrameBuffer& fb, sr::Color32i color)
 {
     bool steep = false;
@@ -44,6 +48,11 @@ void sr::line(sr::Vec2i start, sr::Vec2i end, sr::FrameBuffer& fb, sr::Color32i 
 
 ///
 /// Optimized rasterizing of triangle routine.
+/// \param t0 Screen space first position of triangle
+/// \param t1 Screen space second position of triangle
+/// \param t2 Screen space third position of triangle
+/// \param fb Color framebuffer
+/// \param color color for this triangle
 void sr::triangle(sr::Vec2i t0, sr::Vec2i t1, sr::Vec2i t2, sr::FrameBuffer& fb, sr::Color32i color)
 {
     const int maxW = fb.getWidth() - 1;
