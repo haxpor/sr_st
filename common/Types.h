@@ -124,6 +124,9 @@ struct SR_MEM_ALIGN(16) Vec3
     template <typename U>
     friend U dot(const Vec3<U>& u, const Vec3<U>& v);
 
+    T length() const;
+    T squaredLength() const;
+
     void normalize();
 };
 

@@ -162,6 +162,18 @@ inline U dot(const Vec3<U>& u, const Vec3<U>& v)
 }
 
 template <typename T>
+inline T Vec3<T>::length() const
+{
+    return std::sqrt(x*x + y*y + z*z);
+}
+
+template <typename T>
+inline T Vec3<T>::squaredLength() const
+{
+    return x*x + y*y + z*z;
+}
+
+template <typename T>
 inline void Vec3<T>::normalize()
 {
     // intentionally avoided dereference (*)
