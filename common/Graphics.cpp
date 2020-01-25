@@ -86,7 +86,8 @@ void sr::triangle(sr::Vec2i t0, sr::Vec2i t1, sr::Vec2i t2, sr::FrameBuffer& fb,
         for (p.y = bbMin.y; p.y<=bbMax.y; ++p.y)
         {
             sr::Vec3f bcScreen = sr::MathUtil::barycentric(t0, t1, t2, p);
-            if (bcScreen.x < 0.0f || bcScreen.y < 0.0f || bcScreen.z < 0.0f)
+            if (bcScreen.x < 0.0f || bcScreen.y < 0.0f || bcScreen.z < 0.0f ||
+                bcScreen.x > 1.0f || bcScreen.y > 1.0f || bcScreen.z > 1.0f)
                 continue;
             fb.set(p.x, p.y, color.packed);
         }
