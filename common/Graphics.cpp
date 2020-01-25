@@ -92,3 +92,61 @@ void sr::triangle(sr::Vec2i t0, sr::Vec2i t1, sr::Vec2i t2, sr::FrameBuffer& fb,
         }
     } 
 }
+
+///
+/// Rasterizing of triangle routine with z-buffer support.
+/// \param t0 Screen space first position of triangle
+/// \param t1 Screen space second position of triangle
+/// \param t2 Screen space third position of triangle
+/// \param tDepths Array of float-point z-value (depth) for t0, t1, and t2 respectively.
+/// \param fb Color framebuffer
+/// \param color color for this triangle
+void sr::triangle(sr::Vec2i t0, sr::Vec2i t1, sr::Vec2i t2, float tDepths[3], sr::FrameBuffer& fb, float zBuffer[], sr::Color32i color)
+{
+    const int maxW = fb.getWidth() - 1;
+    const int maxH = fb.getHeight() - 1;
+
+    // find the bounding box for the triangle
+    sr::Vec2i bbMin(maxW, maxH);
+    sr::Vec2i bbMax(0, 0);
+
+    // find minimum x/y
+    bbMin.x = std::max(0, std::min(bbMin.x, t0.x));
+    bbMin.x = std::max(0, std::min(bbMin.x, t1.x));
+    bbMin.x = std::max(0, std::min(bbMin.x, t2.x));
+
+    bbMin.y = std::max(0, std::min(bbMin.y, t0.y));
+    bbMin.y = std::max(0, std::min(bbMin.y, t1.y));
+    bbMin.y = std::max(0, std::min(bbMin.y, t2.y));
+
+    // find maximum x/y
+    bbMax.x = std::min(maxW, std::max(bbMax.x, t0.x));
+    bbMax.x = std::min(maxW, std::max(bbMax.x, t1.x));
+    bbMax.x = std::min(maxW, std::max(bbMax.x, t2.x));
+
+    bbMax.y = std::min(maxH, std::max(bbMax.y, t0.y));
+    bbMax.y = std::min(maxH, std::max(bbMax.y, t1.y));
+    bbMax.y = std::min(maxH, std::max(bbMax.y, t2.y));
+
+    sr::Vec2i p;
+    for (p.x = bbMin.x; p.x<=bbMax.x; ++p.x)
+    {
+        for (p.y = bbMin.y; p.y<=bbMax.y; ++p.y)
+        {
+            sr::Vec3f bcScreen = sr::MathUtil::barycentric(t0, t1, t2, p);
+            if (bcScreen.x < 0.0f || bcScreen.y < 0.0f || bcScreen.z < 0.0f ||
+                bcScreen.x > 1.0f || bcScreen.y > 1.0f || bcScreen.z > 1.0f)
+                continue;
+
+            // compute z-depth value (note floating-point) for this particular pixel on this triangle
+            // surface
+            float z = bcScreen.x*tDepths[0] + bcScreen.y*tDepths[1] + bcScreen.z*tDepths[2];
+            // z-buffer testing
+            if (zBuffer[static_cast<int>(p.x + p.y*fb.getWidth())] < z)
+            {
+                zBuffer[static_cast<int>(p.x + p.y*fb.getWidth())] = z;
+                fb.set(p.x, p.y, color.packed);
+            }
+        }
+    } 
+}

@@ -15,4 +15,8 @@ void line(sr::Vec2i start, sr::Vec2i end, sr::FrameBuffer& fb, sr::Color32i colo
 /// Rasterization of triangle
 void triangle(sr::Vec2i t0, sr::Vec2i t1, sr::Vec2i t2, sr::FrameBuffer& fb, sr::Color32i color);
 
+///
+/// Rasterization of triangle with z-buffer support
+void triangle(sr::Vec2i t0, sr::Vec2i t1, sr::Vec2i t2, float tDepths[3], sr::FrameBuffer& fb, float zBuffer[], sr::Color32i color);
+
 SR_NAMESPACE_END
